@@ -40,9 +40,12 @@ Below is a video tutorial of the overall process (if available on Lingvanex site
 # Clone the repository
 git clone https://github.com/you/mcp-prototype.git
 cd mcp-prototype
+```
 
 # Install dependencies
+```bash
 yarn install
+```
 
 ---
 
