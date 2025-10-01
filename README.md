@@ -1,49 +1,68 @@
-# MCP Server Cloud API
+# MCP Prototype – Translate Server
 
-Этот проект реализует **MCP (Model Context Protocol) сервер** для перевода текста.
-Сервер поддерживает два транспорта:
+This project implements an **MCP (Model Context Protocol) server** for text translation.
+The server supports two transports:
 
-- **stdio** – для интеграции с Claude Desktop
-- **http (streamable)** – для тестирования и работы через HTTP + SSE
-
----
-
-## ⚙️ Требования
-
-- Node.js >= 18
-- Yarn или npm
-- Установленный [Claude Desktop](https://claude.ai/download) (для интеграции через stdio)
+* **stdio** – for integration with Claude Desktop
+* **http (streamable)** – for testing and working via HTTP + SSE
 
 ---
 
-## 🚀 Установка и сборка
+## ⚙️ Requirements
+
+* Node.js >= 18
+* Yarn or npm
+* Installed [Claude Desktop](https://claude.ai/download) (for stdio integration)
+* Lingvanex Translator account for text translation
+
+---
+
+## 🔑 Lingvanex Translator Setup
+
+To use the Lingvanex Translator you'll need a Lingvanex account.
+
+1. If you don't have one, [sign up for free](https://lingvanex.com/account/)
+2. Go to the **Cloud API** tab: [Cloud API](https://lingvanex.com/account/#b2b)
+3. Fill out the **Billing Address** data
+4. Click **Continue to payment**
+
+   * To get a free trial, it is **not necessary** to add your payment card
+5. Your **API key** will be generated and visible in the **Cloud API** tab: [API key](https://lingvanex.com/account/#b2b)
+
+Now you are ready to start using the translation API.
+Below is a video tutorial of the overall process (if available on Lingvanex site).
+
+---
+
+## 🚀 Installation & Build
 
 ```bash
-# Клонирование репозитория
-git clone https://git.nordicwise.com/prototypes/MCP-server-Cloud-API.git
+# Clone the repository
+git clone https://github.com/you/mcp-prototype.git
 cd mcp-prototype
 
-# Установка зависимостей
+# Install dependencies
 yarn install
-```
 
 ---
 
-## 🔌 Запуск в режиме stdio (Claude Desktop)
+## 🔌 Run in stdio mode (Claude Desktop)
 
-Режим **stdio** используется Claude Desktop для локальных MCP-серверов.
+**stdio** mode is used by Claude Desktop to connect to local MCP servers.
 
-### Установите переменную окружения:
+### Set environment variable:
 
 TRANSPORT=stdio
 
-### Запустите сервер:
+### Start the server:
+
 ```bash
 yarn build
 yarn start
 ```
 
-### Ожидаемый вывод:
+### Expected output:
+
 ```
 MCP stdio transport running
 Translate MCP Server ready
@@ -51,52 +70,57 @@ Translate MCP Server ready
 
 ---
 
-## 🌐 Запуск в режиме HTTP (streamable)
+## 🌐 Run in HTTP mode (streamable)
 
-Режим **http** поднимает локальный HTTP-сервер
-Полезно для тестирования в браузере или через `curl`.
+**http** mode runs a local HTTP server with HTTP transport.
+Useful for browser testing or with `curl`.
 
-### Установите переменные окружения:
+### Set environment variables:
 
+```bash
 TRANSPORT=http
 HTTP_PORT=3000
+```
+### Start the server:
 
-### Запустите сервер:
 ```bash
 yarn build
 yarn start
 ```
 
-### Проверьте работу:
+### Test the server:
+
 ```bash
 curl http://127.0.0.1:3000/ping
 ```
 
-**Ответ должен быть:**
+**Expected response:**
+
 ```json
 { "status": "ok", "transport": "http" }
 ```
 
-### Используйте MCP Inspector для отладки
+### Use MCP Inspector for debugging:
+
 ```bash
 npx @modelcontextprotocol/inspector
 ```
 
-В UI MCP Inspector выберите Transport Type - Streamable HTTP; URL - http://localhost:3000/mcp. Нажмите - Connect
+In the MCP Inspector UI, select Transport Type - Streamable HTTP; URL - http://localhost:3000/mcp. Click Connect.
 
 ---
 
-## 🖥️ Интеграция с Claude Desktop
+## 🖥️ Integration with Claude Desktop
 
-Claude Desktop ищет локальные MCP-серверы через конфиг:
+Claude Desktop discovers local MCP servers via config file:
 
-- **Windows**: `%APPDATA%\Claude\claude_desktop_config.json`
-- **macOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`
-- **Linux**: `~/.config/Claude/claude_desktop_config.json`
+* **Windows**: `%APPDATA%\Claude\claude_desktop_config.json`
+* **macOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`
+* **Linux**: `~/.config/Claude/claude_desktop_config.json`
 
-### Пример конфига для Windows
+### Example config (Windows)
 
-Откройте (или создайте) `claude_desktop_config.json` и добавьте:
+Open (or create) `claude_desktop_config.json` and add:
 
 ```json
 {
@@ -105,37 +129,42 @@ Claude Desktop ищет локальные MCP-серверы через кон�
       "command": "node",
       "args": [
         "C:\\Users\\path\\to\\project\\dist\\index.js"
-      ]
+      ],
+      "env": {
+        "TRANSPORT": "stdio"
+      }
     }
   }
 }
 ```
 
-> ⚠️ Укажите путь к вашему `dist/index.js` после сборки!
+> ⚠️ Make sure to update the path to your local `dist/index.js` after build!
 
 ---
 
-## ✅ Проверка работы
+## ✅ How to verify
 
-1. Запустите Claude Desktop.
-2. Введите запрос:
-   _"Используй MCP тул `translate_text`, чтобы перевести 'Hello world' на русский."_
-3. Если всё настроено верно, Claude вызовет ваш MCP-сервер и вернёт перевод.
+1. Launch Claude Desktop.
+2. Enter a request like:
+   *"Use the MCP tool `translate_text` to translate 'Hello world' into Russian."*
+3. If everything is configured correctly, Claude will call your MCP server and return the translation.
 
 ---
 
-## 📌 Доступные инструменты
+## 📌 Available Tools
 
 ### `translate_text`
 
-Перевод текста с одного языка на другой.
+Translate text from one language into another.
 
-**Аргументы:**
-- `text` – строка для перевода
-- `sourceLang` – код исходного языка (например, `"en"`)
-- `targetLang` – код целевого языка (например, `"ru"`)
+**Arguments:**
 
-**Пример вызова:**
+* `text` – the text to translate
+* `sourceLang` – source language code (e.g. `"en"`)
+* `targetLang` – target language code (e.g. `"ru"`)
+
+**Example request:**
+
 ```json
 {
   "tool": "translate_text",
@@ -147,7 +176,8 @@ Claude Desktop ищет локальные MCP-серверы через кон�
 }
 ```
 
-**Пример ответа:**
+**Example response:**
+
 ```json
 {
   "content": [
