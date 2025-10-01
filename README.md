@@ -132,10 +132,7 @@ Open (or create) `claude_desktop_config.json` and add:
       "command": "node",
       "args": [
         "C:\\Users\\path\\to\\project\\dist\\index.js"
-      ],
-      "env": {
-        "TRANSPORT": "stdio"
-      }
+      ]
     }
   }
 }
