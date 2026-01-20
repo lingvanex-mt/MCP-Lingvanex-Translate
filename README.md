@@ -38,7 +38,7 @@ Below is a video tutorial of the overall process (if available on Lingvanex site
 
 ```bash
 # Clone the repository
-git clone https://github.com/you/mcp-prototype.git
+git clone https://github.com/lingvanex-mt/MCP-Lingvanex-Translate.git
 cd mcp-prototype
 ```
 
